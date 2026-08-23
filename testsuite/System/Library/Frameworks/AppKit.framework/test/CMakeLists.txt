@@ -55,12 +55,25 @@ add_test(NAME "${DARLING_PATH}/test_NSCursor_initWithCoder" COMMAND "${DARLING_I
 
 # NSWorkspace
 
-add_executable("${DARLING_IDENTIFIER}.test_NSWorkspace_openFile_withApplication_andDeactivate" "NSWorkspace/test_NSWorkspace_openFile_withApplication_andDeactivate.m")
-target_link_libraries("${DARLING_IDENTIFIER}.test_NSWorkspace_openFile_withApplication_andDeactivate" "-framework Foundation" "-framework AppKit" darling-testsuite-lib)
-add_test(NAME "${DARLING_PATH}/test_NSWorkspace_openFile_withApplication_andDeactivate" COMMAND "${DARLING_IDENTIFIER}.test_NSWorkspace_openFile_withApplication_andDeactivate")
-
 add_executable("${DARLING_IDENTIFIER}.manual_NSWorkspace_openURL" "NSWorkspace/manual/test_NSWorkspace_openURL.m")
 target_link_libraries("${DARLING_IDENTIFIER}.manual_NSWorkspace_openURL" "-framework Foundation" "-framework AppKit" darling-testsuite-lib)
+
+add_executable("${DARLING_IDENTIFIER}.manual_NSWorkspace_openFile_withApplication_andDeactivate" "NSWorkspace/manual/test_NSWorkspace_openFile_withApplication_andDeactivate.m")
+target_link_libraries("${DARLING_IDENTIFIER}.manual_NSWorkspace_openFile_withApplication_andDeactivate" "-framework Foundation" "-framework AppKit" darling-testsuite-lib)
+
+# Application bundle used by the manual openFile test above. Built without the
+# ${DARLING_IDENTIFIER} prefix because the installed binary name must match
+# CFBundleExecutable in its Info.plist.
+add_executable("NSApplicationDelegate_application_openFile" "NSWorkspace/manual/NSApplicationDelegate_application_openFile.app/Contents/MacOS/NSApplicationDelegate_application_openFile.m")
+target_link_libraries("NSApplicationDelegate_application_openFile" "-framework Foundation" "-framework AppKit")
+
+install(TARGETS "NSApplicationDelegate_application_openFile"
+    DESTINATION "${INSTALL_DIR_MANUAL}/NSApplicationDelegate_application_openFile.app/Contents/MacOS"
+)
+
+install(FILES "NSWorkspace/manual/NSApplicationDelegate_application_openFile.app/Contents/Info.plist"
+    DESTINATION "${INSTALL_DIR_MANUAL}/NSApplicationDelegate_application_openFile.app/Contents"
+)
 
 # Misc
 
@@ -89,9 +102,6 @@ install(
         "${DARLING_IDENTIFIER}.test_NSCursor_encodeWithCoder"
         "${DARLING_IDENTIFIER}.test_NSCursor_initWithCoder"
 
-        # NSWorkspace
-        "${DARLING_IDENTIFIER}.test_NSWorkspace_openFile_withApplication_andDeactivate"
-
         # Misc
         "${DARLING_IDENTIFIER}.test_AppKit_variable"
 
@@ -103,6 +113,7 @@ install(
     TARGETS
         # NSWorkspace
         "${DARLING_IDENTIFIER}.manual_NSWorkspace_openURL"
+        "${DARLING_IDENTIFIER}.manual_NSWorkspace_openFile_withApplication_andDeactivate"
 
     DESTINATION
         "${INSTALL_DIR_MANUAL}"
